@@ -4,6 +4,7 @@ hosts=""
 ssh_options=""
 tmux_name="cssh"
 tmux_attach_current_session="false"
+detach="false"
 
 usage() {
   echo "Usage: $0 [options] host [host ...]" >&2
@@ -30,6 +31,10 @@ while [ $# -ne 0 ]; do
       ;;
     -c)
       tmux_attach_current_session="true"
+      shift
+      ;;
+    -d)
+      detach="true"
       shift
       ;;
     -o)
@@ -125,6 +130,11 @@ if [ -n "${TMUX}" ]; then
 else
   # We are NOT in a tmux, attach to the new session
   tmux attach-session -t "${tmux_session}"
+fi
+
+# Detach session if requested to
+if [ "${detach}" = "true" ]; then
+  tmux detach-client
 fi
 
 exit 0
